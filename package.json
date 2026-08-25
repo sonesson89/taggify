@@ -1,0 +1,29 @@
+{
+  "name": "taggify",
+  "version": "1.0.0",
+  "description": "An application to add metadata tags to media files and sort them.",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/addMetadataTagsToFiles.js",
+    "dev": "ts-node addMetadataTagsToFiles.ts",
+    "client:dev": "npm --prefix client run dev",
+    "server:dev": "npm --prefix server run dev",
+    "fullstack:dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "fullstack:build": "npm --prefix server run build && npm --prefix client run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Sonesson (sonesson89)",
+  "license": "ISC",
+  "engines": {
+    "node": "22.*"
+  },
+  "dependencies": {
+    "exiftool-vendored": "^37.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0",
+    "concurrently": "^9.0.1"
+  }
+}

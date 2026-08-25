@@ -1,0 +1,320 @@
+@import "../constants.less";
+
+.slideoutBackdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgba(9, 14, 10, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 30;
+}
+
+.slideoutPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: #fbfefc;
+  border-left: 1px solid rgba(46, 111, 64, 0.18);
+  box-shadow: -18px 0 40px rgba(20, 60, 35, 0.18);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  animation: slideInRight 0.25s ease-out;
+}
+
+.slideoutPanelContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.slideoutResizeHandle {
+  position: absolute;
+  top: 50%;
+  left: -14px;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 82px;
+  border: 1px solid rgba(46, 111, 64, 0.25);
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ew-resize;
+  box-shadow: -6px 0 18px rgba(20, 60, 35, 0.1);
+  padding: 0;
+
+  &:focus-visible {
+    outline: 2px solid rgba(46, 111, 64, 0.42);
+    outline-offset: 2px;
+  }
+}
+
+.slideoutResizeHandleGrip {
+  display: block;
+  width: 3px;
+  height: 34px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(46, 111, 64, 0.76),
+    rgba(46, 111, 64, 0.76) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.slideoutHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+
+  h2 {
+    margin: 0.25rem 0 0;
+    font-size: 1.4rem;
+    line-height: 1.2;
+    color: @color-card-text;
+  }
+}
+
+.slideoutHeaderActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.slideoutNavButton {
+  appearance: none;
+  border: 1px solid rgba(46, 111, 64, 0.2);
+  background: #fff;
+  color: @color-accent;
+  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+.slideoutEyebrow {
+  margin: 0;
+  color: @color-accent;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.slideoutCloseButton {
+  appearance: none;
+  border: 1px solid rgba(46, 111, 64, 0.2);
+  background: #fff;
+  color: @color-accent;
+  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.slideoutDeleteButton {
+  appearance: none;
+  border: 1px solid rgba(158, 38, 38, 0.28);
+  background: #fff;
+  color: #9e2626;
+  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: rgba(158, 38, 38, 0.08);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+.slideoutImageWrap {
+  border-radius: 18px;
+  overflow: hidden;
+  background: @color-card-img-bg;
+  border: 1px solid @color-card-border;
+}
+
+.slideoutImage {
+  display: block;
+  width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  background: @color-card-img-bg;
+}
+
+.slideoutMeta {
+  h3 {
+    margin: 0 0 0.6rem;
+    color: @color-card-text;
+    font-size: 1rem;
+  }
+}
+
+.slideoutMeta .tagSuggestionInput {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin: 0 0 0.75rem;
+  flex-wrap: wrap;
+}
+
+.slideoutCurrentTagsLabel {
+  margin: 0 0 0.45rem;
+  color: @color-card-text;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.slideoutMeta .tagSuggestionInputField {
+  flex: 1 1 16rem;
+  min-width: 0;
+  border: 1px solid rgba(46, 111, 64, 0.25);
+  border-radius: 999px;
+  padding: 0.7rem 0.95rem;
+  font: inherit;
+  color: @color-card-text;
+  background: #fff;
+
+  &:focus {
+    outline: 2px solid rgba(46, 111, 64, 0.35);
+    outline-offset: 2px;
+  }
+}
+
+.slideoutMeta .tagSuggestionInputButton {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: @color-accent;
+  cursor: pointer;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+.slideoutRecentTags {
+  margin: 0 0 0.9rem;
+}
+
+.slideoutRecentTagsLabel {
+  margin: 0 0 0.4rem;
+  color: @color-card-text;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.slideoutRecentTagsList {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.slideoutRecentTagButton {
+  appearance: none;
+  border: 1px solid rgba(46, 111, 64, 0.22);
+  background: rgba(255, 255, 255, 0.9);
+  color: @color-accent;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  transition: background-color 0.18s ease, opacity 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(46, 111, 64, 0.09);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  &.alreadyAdded {
+    opacity: 0.5;
+  }
+}
+
+.slideoutTags {
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.imagePillDelete {
+  .trashIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.95rem;
+    height: 0.95rem;
+    opacity: 0.92;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@media (max-width: 720px) {
+  .slideoutPanel {
+    width: 100vw;
+  }
+
+  .slideoutPanelContent {
+    padding: 1rem;
+  }
+
+  .slideoutResizeHandle {
+    display: none;
+  }
+}
