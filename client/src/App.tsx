@@ -11,6 +11,8 @@ import {
   addTagToImage,
   deleteMediaFile,
   deleteTagFromImage,
+  openMediaFile,
+  revealMediaFile,
 } from "./api/imageTags";
 import FolderNavigation from "./components/FolderNavigation.tsx";
 import ImageCard from "./components/ImageCard.tsx";
@@ -1075,6 +1077,41 @@ function App() {
     }
   };
 
+  const handleOpenSelectedImage = async (): Promise<boolean> => {
+    if (!selectedImage) {
+      return false;
+    }
+
+    try {
+      await openMediaFile(selectedImage.name, selectedRootFolder ?? undefined);
+      setError("");
+      return true;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
+      return false;
+    }
+  };
+
+  const handleRevealSelectedImage = async (): Promise<boolean> => {
+    if (!selectedImage) {
+      return false;
+    }
+
+    try {
+      await revealMediaFile(
+        selectedImage.name,
+        selectedRootFolder ?? undefined,
+      );
+      setError("");
+      return true;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
+      return false;
+    }
+  };
+
   return (
     <main className="app-shell">
       {!selectedRootFolder ? (
@@ -1171,7 +1208,11 @@ function App() {
                   {untaggedMediaCount}
                 </p>
 
-                <div className="contentTypeFilter" role="group" aria-label="Content type">
+                <div
+                  className="contentTypeFilter"
+                  role="group"
+                  aria-label="Content type"
+                >
                   <MediaTypeFilters
                     selectedContentTypes={selectedContentTypes}
                     onToggleContentType={(contentType) => {
@@ -1351,6 +1392,8 @@ function App() {
               onAddTag={handleAddTagToSelectedImage}
               onDeleteTag={handleDeleteTagFromSelectedImage}
               onDeleteMedia={handleDeleteSelectedImage}
+              onOpenMedia={handleOpenSelectedImage}
+              onRevealMedia={handleRevealSelectedImage}
               onPrevious={handleOpenPreviousInSlideout}
               onNext={handleOpenNextInSlideout}
               canNavigatePrevious={canNavigateToPreviousInSlideout}

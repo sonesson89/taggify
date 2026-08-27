@@ -99,6 +99,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .slideoutNavButton {
@@ -126,7 +128,8 @@
   text-transform: uppercase;
 }
 
-.slideoutCloseButton {
+.slideoutCloseButton,
+.slideoutRevealButton {
   appearance: none;
   border: 1px solid rgba(46, 111, 64, 0.2);
   background: #fff;
@@ -135,6 +138,31 @@
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
   cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+.slideoutOpenButton {
+  appearance: none;
+  border: 1px solid rgba(46, 111, 64, 0.28);
+  background: @color-accent;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
 }
 
 .slideoutDeleteButton {

@@ -92,3 +92,49 @@ export const deleteMediaFile = async (
     throw new Error(message);
   }
 };
+
+export const openMediaFile = async (
+  fileName: string,
+  rootFolder?: string,
+): Promise<void> => {
+  const requestUrl = new URL(
+    `/api/media/${encodeURIComponent(fileName)}/open`,
+    window.location.origin,
+  );
+  if (rootFolder) {
+    requestUrl.searchParams.set("root", rootFolder);
+  }
+
+  const response = await fetch(requestUrl.toString(), { method: "POST" });
+
+  if (!response.ok) {
+    const message = await parseApiErrorMessage(
+      response,
+      `Failed to open media file. Server responded with ${response.status}.`,
+    );
+    throw new Error(message);
+  }
+};
+
+export const revealMediaFile = async (
+  fileName: string,
+  rootFolder?: string,
+): Promise<void> => {
+  const requestUrl = new URL(
+    `/api/media/${encodeURIComponent(fileName)}/reveal`,
+    window.location.origin,
+  );
+  if (rootFolder) {
+    requestUrl.searchParams.set("root", rootFolder);
+  }
+
+  const response = await fetch(requestUrl.toString(), { method: "POST" });
+
+  if (!response.ok) {
+    const message = await parseApiErrorMessage(
+      response,
+      `Failed to reveal media file. Server responded with ${response.status}.`,
+    );
+    throw new Error(message);
+  }
+};

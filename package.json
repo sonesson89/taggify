@@ -1,6 +1,6 @@
 {
   "name": "taggify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An application to add metadata tags to media files and sort them.",
   "scripts": {
     "build": "tsc",

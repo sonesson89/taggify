@@ -21,6 +21,7 @@
 - Use TypeScript strictness-friendly code.
 - Keep naming descriptive and consistent with current files.
 - Add brief comments only when logic is non-obvious.
+- Do not prefix async event-handler calls with `void`; call the handler directly (for example, `onClick={() => handleClick()}`).
 
 ## Verification
 - Use editor diagnostics for quick checks.

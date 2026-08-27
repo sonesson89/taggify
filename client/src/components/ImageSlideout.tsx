@@ -18,6 +18,8 @@ type ImageSlideoutProps = {
   onAddTag: (tagName: string) => Promise<boolean>;
   onDeleteTag: (tagName: string) => Promise<boolean>;
   onDeleteMedia: () => Promise<boolean>;
+  onOpenMedia: () => Promise<boolean>;
+  onRevealMedia: () => Promise<boolean>;
   onPrevious: () => void;
   onNext: () => void;
   canNavigatePrevious: boolean;
@@ -34,6 +36,8 @@ function ImageSlideout({
   onAddTag,
   onDeleteTag,
   onDeleteMedia,
+  onOpenMedia,
+  onRevealMedia,
   onPrevious,
   onNext,
   canNavigatePrevious,
@@ -44,6 +48,8 @@ function ImageSlideout({
 }: ImageSlideoutProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isDeletingTag, setIsDeletingTag] = useState<string | null>(null);
+  const [isOpeningMedia, setIsOpeningMedia] = useState<boolean>(false);
+  const [isRevealingMedia, setIsRevealingMedia] = useState<boolean>(false);
   const clampPanelWidth = (nextWidth: number): number => {
     const maxWidth = Math.floor(window.innerWidth * MAX_PANEL_VIEWPORT_RATIO);
     const minWidth = Math.min(MIN_PANEL_WIDTH, maxWidth);
@@ -224,6 +230,32 @@ function ImageSlideout({
     void onDeleteMedia();
   };
 
+  const handleOpenMediaClick = async () => {
+    if (isOpeningMedia) {
+      return;
+    }
+
+    setIsOpeningMedia(true);
+    try {
+      await onOpenMedia();
+    } finally {
+      setIsOpeningMedia(false);
+    }
+  };
+
+  const handleRevealMediaClick = async () => {
+    if (isRevealingMedia) {
+      return;
+    }
+
+    setIsRevealingMedia(true);
+    try {
+      await onRevealMedia();
+    } finally {
+      setIsRevealingMedia(false);
+    }
+  };
+
   if (!image) {
     return null;
   }
@@ -287,6 +319,22 @@ function ImageSlideout({
               </button>
               <button
                 type="button"
+                className="slideoutOpenButton"
+                onClick={() => handleOpenMediaClick()}
+                disabled={isOpeningMedia || isRevealingMedia || isDeletingMedia}
+              >
+                {isOpeningMedia ? "Opening..." : "Open file"}
+              </button>
+              <button
+                type="button"
+                className="slideoutRevealButton"
+                onClick={() => handleRevealMediaClick()}
+                disabled={isRevealingMedia || isOpeningMedia || isDeletingMedia}
+              >
+                {isRevealingMedia ? "Revealing..." : "Reveal in Finder"}
+              </button>
+              <button
+                type="button"
                 className="slideoutDeleteButton"
                 onClick={handleDeleteMediaClick}
                 disabled={isDeletingMedia}
@@ -318,7 +366,9 @@ function ImageSlideout({
 
           <div className="slideoutMeta">
             <h3>Tags</h3>
-            <p className="slideoutCurrentTagsLabel">Current tags on this media</p>
+            <p className="slideoutCurrentTagsLabel">
+              Current tags on this media
+            </p>
             <div className="pillsContainer slideoutTags">
               {image.tags.map((tag) => (
                 <Pill
@@ -353,7 +403,9 @@ function ImageSlideout({
                         void handleAddTag(tagName);
                       }}
                       disabled={isSubmitting || image.tags.includes(tagName)}
-                      aria-disabled={isSubmitting || image.tags.includes(tagName)}
+                      aria-disabled={
+                        isSubmitting || image.tags.includes(tagName)
+                      }
                     >
                       {tagName}
                     </button>
