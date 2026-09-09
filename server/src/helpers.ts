@@ -60,7 +60,7 @@ $dialog.Description = "Select a folder"
 $dialog.ShowNewFolderButton = $true
 
 # Preselect this folder
-$dialog.SelectedPath = "Z:\\Pics"
+$dialog.SelectedPath = "C:\\Pics"
 
 if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
   Write-Output $dialog.SelectedPath
