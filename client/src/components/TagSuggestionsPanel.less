@@ -1,0 +1,75 @@
+@import "../constants.less";
+
+.slideoutSuggestedTags {
+  margin: 0 0 0.9rem;
+}
+
+.slideoutSuggestedTagsLabel {
+  margin: 0 0 0.4rem;
+  color: @color-card-text;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.slideoutSuggestedTagsStatus {
+  margin: 0 0 0.4rem;
+  color: @color-card-text;
+  font-size: 0.8rem;
+  opacity: 0.75;
+
+  &.error {
+    color: #c0392b;
+    opacity: 1;
+  }
+}
+
+.slideoutSuggestedTagsList {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.slideoutSuggestionPill {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid rgba(46, 111, 64, 0.22);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.slideoutSuggestionAccept {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: @color-accent;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.18s ease, opacity 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(46, 111, 64, 0.09);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+.slideoutSuggestionDismiss {
+  appearance: none;
+  border: none;
+  border-left: 1px solid rgba(46, 111, 64, 0.18);
+  background: transparent;
+  color: @color-card-text;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  opacity: 0.65;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(192, 57, 43, 0.1);
+  }
+}

@@ -3,11 +3,15 @@ const Pill = ({
   onClick,
   color,
   showRemoveIcon = true,
+  title = "Delete tag",
+  style,
 }: {
   text: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   color: string;
   showRemoveIcon?: boolean;
+  title?: string;
+  style?: React.CSSProperties;
 }) => {
   return (
     <button
@@ -15,9 +19,10 @@ const Pill = ({
       className="imagePill clickable imagePillDelete"
       style={{
         backgroundColor: color,
+        ...style,
       }}
       onClick={onClick}
-      title="Delete tag"
+      title={title}
     >
       <span>{text}</span>
       {showRemoveIcon && (
@@ -35,3 +40,4 @@ const Pill = ({
 };
 
 export default Pill;
+

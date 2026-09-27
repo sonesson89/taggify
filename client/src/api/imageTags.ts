@@ -1,3 +1,5 @@
+import type { TagSuggestionsResponse } from "../types";
+
 type ApiErrorPayload = {
   error?: string;
   details?: string;
@@ -137,4 +139,30 @@ export const revealMediaFile = async (
     );
     throw new Error(message);
   }
+};
+
+export const getTagSuggestions = async (
+  fileName: string,
+  rootFolder?: string,
+): Promise<TagSuggestionsResponse> => {
+  const requestUrl = new URL(
+    `/api/media/${encodeURIComponent(fileName)}/tag-suggestions`,
+    window.location.origin,
+  );
+  if (rootFolder) {
+    requestUrl.searchParams.set("root", rootFolder);
+  }
+
+  const response = await fetch(requestUrl.toString());
+
+  // 202 means the local model is still loading; treat it like a valid, non-final response.
+  if (!response.ok && response.status !== 202) {
+    const message = await parseApiErrorMessage(
+      response,
+      `Failed to get tag suggestions. Server responded with ${response.status}.`,
+    );
+    throw new Error(message);
+  }
+
+  return (await response.json()) as TagSuggestionsResponse;
 };

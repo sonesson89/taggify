@@ -83,15 +83,25 @@
 
 .slideoutHeader {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+
+  // Flex items default to a min-width based on their content, which would
+  // otherwise prevent the title below from ever shrinking enough to truncate.
+  > div {
+    min-width: 0;
+  }
 
   h2 {
     margin: 0.25rem 0 0;
     font-size: 1.4rem;
     line-height: 1.2;
     color: @color-card-text;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -103,7 +113,17 @@
   justify-content: flex-end;
 }
 
-.slideoutNavButton {
+.slideoutEyebrow {
+  margin: 0;
+  color: @color-accent;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.slideoutRevealButton,
+.slideoutCopyButton {
   appearance: none;
   border: 1px solid rgba(46, 111, 64, 0.2);
   background: #fff;
@@ -119,29 +139,67 @@
   }
 }
 
-.slideoutEyebrow {
-  margin: 0;
-  color: @color-accent;
-  font-weight: 700;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.slideoutCloseButton,
-.slideoutRevealButton {
+.slideoutCloseButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
   appearance: none;
   border: 1px solid rgba(46, 111, 64, 0.2);
   background: #fff;
   color: @color-accent;
-  font-weight: 700;
-  padding: 0.55rem 0.9rem;
-  border-radius: 999px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border-radius: 999px;
+
+  svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    display: block;
+  }
+
+  &:hover:not(:disabled) {
+    background: rgba(46, 111, 64, 0.08);
+  }
 
   &:disabled {
     cursor: not-allowed;
     opacity: 0.45;
+  }
+}
+
+.slideoutRevealButton {
+  &:hover:not(:disabled) {
+    background: rgba(46, 111, 64, 0.08);
+  }
+}
+
+.slideoutCopyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  &:hover:not(:disabled) {
+    background: rgba(46, 111, 64, 0.08);
+  }
+
+  .copyIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.95rem;
+    height: 0.95rem;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
   }
 }
 
@@ -154,9 +212,12 @@
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
   cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 
   &:hover:not(:disabled) {
-    filter: brightness(1.05);
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(46, 111, 64, 0.35);
   }
 
   &:disabled {
@@ -174,6 +235,9 @@
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 
   &:hover:not(:disabled) {
     background: rgba(158, 38, 38, 0.08);
@@ -183,19 +247,75 @@
     cursor: not-allowed;
     opacity: 0.45;
   }
+
+  .trashIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.95rem;
+    height: 0.95rem;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
 }
 
 .slideoutImageWrap {
+  position: relative;
   border-radius: 18px;
   overflow: hidden;
   background: @color-card-img-bg;
   border: 1px solid @color-card-border;
 }
 
+.slideoutImageNavButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(9, 14, 10, 0.45);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: background-color 0.18s ease, opacity 0.18s ease;
+
+  svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    display: block;
+  }
+
+  &:hover:not(:disabled) {
+    background: rgba(9, 14, 10, 0.65);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
+}
+
+.slideoutImageNavButtonPrevious {
+  left: 0.75rem;
+}
+
+.slideoutImageNavButtonNext {
+  right: 0.75rem;
+}
+
 .slideoutImage {
   display: block;
   width: 100%;
-  max-height: 65vh;
+  max-height: 50vh;
   object-fit: contain;
   background: @color-card-img-bg;
 }

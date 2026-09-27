@@ -42,3 +42,14 @@ export type Tag = {
 };
 
 export type FilterMode = "AND" | "OR";
+
+export type TagSuggestion = {
+  tag: string;
+  score: number;
+};
+
+export type TagSuggestionsResponse = {
+  ok: boolean;
+  modelLoading?: boolean;
+  suggestions: TagSuggestion[];
+};

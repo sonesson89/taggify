@@ -47,6 +47,10 @@ import {
   removeCachedMediaEntry,
   updateCachedMediaTags,
 } from "./mediaIndex.js";
+import {
+  getTagSuggestionModelStatus,
+  getTagSuggestionsForMedia,
+} from "./tagSuggestions.js";
 
 const app = express();
 let requestSequence = 0;
@@ -648,6 +652,85 @@ app.post(
   },
 );
 
+app.get(
+  "/api/media/:fileName/tag-suggestions",
+  async (req: Request<ImageTagRouteParams>, res: Response) => {
+    const requestLabel = createRequestLabel("tag-suggestions");
+    const startTime = Date.now();
+
+    try {
+      const mediaFile = resolveMediaRouteFile(req, res);
+      if (!mediaFile) {
+        return;
+      }
+
+      const stat = await statMediaFile(mediaFile.fullPath);
+      if (!stat?.isFile()) {
+        res.status(404).json({ error: "File not found" });
+        return;
+      }
+
+      const testModeLimit = resolveTestModeLimit();
+      const mediaIndex = await ensureMediaIndex(
+        mediaFile.rootDirectoryPath,
+        requestLabel,
+        { maxSupportedFiles: testModeLimit },
+      );
+
+      const targetEntry = mediaIndex.mediaByRelativePath.get(
+        mediaFile.fileName,
+      );
+      if (!targetEntry) {
+        res.status(404).json({ error: "Media file is not indexed" });
+        return;
+      }
+
+      const modelState = getTagSuggestionModelStatus();
+      if (modelState.status === "loading") {
+        res.status(202).json({ ok: true, modelLoading: true, suggestions: [] });
+        return;
+      }
+
+      if (modelState.status === "error") {
+        res.status(500).json({
+          error: "Local tag-suggestion model failed to load",
+          details: modelState.error ?? "Unknown error",
+        });
+        return;
+      }
+
+      const taggedEntries = mediaIndex.sortedMedia.filter(
+        (entry) => entry.tags.length > 0,
+      );
+
+      const suggestions = await getTagSuggestionsForMedia(
+        mediaFile.rootDirectoryPath,
+        targetEntry,
+        taggedEntries,
+      );
+
+      res.json({ ok: true, modelLoading: false, suggestions });
+
+      const durationMs = Date.now() - startTime;
+      logProgress(
+        requestLabel,
+        `Computed ${suggestions.length} tag suggestions for '${mediaFile.fileName}' in ${durationMs}ms`,
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const durationMs = Date.now() - startTime;
+      logProgress(
+        requestLabel,
+        `Failed to compute tag suggestions after ${durationMs}ms: ${message}`,
+      );
+      res.status(500).json({
+        error: "Failed to compute tag suggestions",
+        details: message,
+      });
+    }
+  },
+);
+
 app.delete(
   "/api/media/:fileName",
   async (req: Request<ImageTagRouteParams>, res: Response) => {
@@ -675,6 +758,7 @@ app.delete(
     }
   },
 );
+
 
 app.delete(
   "/api/media/:fileName/tags/:tagName",

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   FilterMode,
   FolderNode,
@@ -6,11 +6,13 @@ import type {
   ImageDto,
   ImagesResponse,
   Tag,
+  TagSuggestionsResponse,
 } from "./types";
 import {
   addTagToImage,
   deleteMediaFile,
   deleteTagFromImage,
+  getTagSuggestions,
   openMediaFile,
   revealMediaFile,
 } from "./api/imageTags";
@@ -20,6 +22,7 @@ import ImageSlideout from "./components/ImageSlideout.tsx";
 import Pagination from "./components/Pagination.tsx";
 import "./App.less";
 import Pill from "./components/Pill.tsx";
+import AllTagsModal from "./components/AllTagsModal.tsx";
 import MediaIndexProgressBar from "./components/MediaIndexProgressBar.tsx";
 import MediaTypeFilters from "./components/MediaTypeFilters.tsx";
 import TagSuggestionInput from "./components/TagSuggestionInput.tsx";
@@ -147,6 +150,7 @@ function App() {
   const [isDeletingSelectedMedia, setIsDeletingSelectedMedia] =
     useState<boolean>(false);
   const [recentlyAddedTags, setRecentlyAddedTags] = useState<string[]>([]);
+  const [isAllTagsModalOpen, setIsAllTagsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     return () => {
@@ -1112,6 +1116,18 @@ function App() {
     }
   };
 
+  const handleFetchTagSuggestionsForSelectedImage =
+    useCallback(async (): Promise<TagSuggestionsResponse> => {
+      if (!selectedImage) {
+        return { ok: false, suggestions: [] };
+      }
+
+      return getTagSuggestions(selectedImage.name, selectedRootFolder ?? undefined);
+      // Depend only on the media name (not the whole object) so this callback stays
+      // stable while tags on the currently open image are added/removed.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedImage?.name, selectedRootFolder]);
+
   return (
     <main className="app-shell">
       {!selectedRootFolder ? (
@@ -1331,6 +1347,15 @@ function App() {
                       >
                         Clear selected tags
                       </button>
+
+                      <button
+                        type="button"
+                        className="deselectButton"
+                        onClick={() => setIsAllTagsModalOpen(true)}
+                        disabled={tags.length === 0}
+                      >
+                        All tags
+                      </button>
                     </div>
 
                     <div className="pillsContainer tagFilterSelectedPills">
@@ -1388,6 +1413,7 @@ function App() {
             <ImageSlideout
               image={selectedImage}
               tags={tags}
+              tagNameSuggestions={tagNameSuggestions}
               recentAddedTags={recentlyAddedTags}
               onAddTag={handleAddTagToSelectedImage}
               onDeleteTag={handleDeleteTagFromSelectedImage}
@@ -1403,7 +1429,19 @@ function App() {
                 isLoading && pendingSlideoutBoundaryDirection !== null
               }
               onClose={() => setSelectedImage(null)}
+              onFetchTagSuggestions={handleFetchTagSuggestionsForSelectedImage}
             />
+
+            {isAllTagsModalOpen && (
+              <AllTagsModal
+                tags={tags}
+                selectedTagNames={tagsFilter}
+                onClose={() => setIsAllTagsModalOpen(false)}
+                onSelectTag={(tagName) => {
+                  handleAddTagToFilter(tagName);
+                }}
+              />
+            )}
           </div>
         </div>
       )}

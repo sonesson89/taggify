@@ -95,3 +95,10 @@ export type ResolvedMediaFile = {
   extension: string;
   descriptor: MediaDescriptor;
 };
+
+export type TagSuggestion = {
+  tag: string;
+  score: number;
+};
+
+export type TagSuggestionModelStatus = "idle" | "loading" | "ready" | "error";
